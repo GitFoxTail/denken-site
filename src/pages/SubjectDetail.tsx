@@ -33,6 +33,7 @@ export default function SubjectDetail() {
 
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
     const [showingAnswer, setShowingAnswer] = useState(false);
+    const [copiedImage, setCopiedImage] = useState<string | null>(null);
     const label = SUBJECT_LABELS[subject] ?? subject;
 
     const handleSelectAnswer = (key: number) => {
@@ -49,6 +50,17 @@ export default function SubjectDetail() {
         } else {
             // 「正答を見る」状態なら正答を表示
             setShowingAnswer(true);
+        }
+    };
+
+    const handleCopyImage = async (img: string) => {
+        try {
+            const imageUrl = `${window.location.origin}/images/questions/${img}`;
+            await navigator.clipboard.writeText(imageUrl);
+            setCopiedImage(img);
+            setTimeout(() => setCopiedImage(null), 2000);
+        } catch (err) {
+            console.error("Failed to copy image URL:", err);
         }
     };
 
@@ -133,12 +145,23 @@ export default function SubjectDetail() {
             {question.hasImage && question.images && (
                 <div className="flex flex-wrap gap-4 mb-6">
                     {question.images.map((img) => (
-                        <img
-                            key={img}
-                            src={`/images/questions/${img}`}
-                            alt={img}
-                            className="max-w-full rounded border"
-                        />
+                        <div key={img} className="relative inline-block">
+                            <img
+                                src={`/images/questions/${img}`}
+                                alt={img}
+                                className="max-w-full rounded border"
+                            />
+                            <button
+                                onClick={() => handleCopyImage(img)}
+                                className={`absolute top-2 right-2 px-2 py-1 text-xs font-medium rounded transition cursor-pointer
+                                    ${copiedImage === img
+                                        ? "bg-green-500 text-white"
+                                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 shadow"
+                                    }`}
+                            >
+                                {copiedImage === img ? "✓ コピーしました" : "コピー"}
+                            </button>
+                        </div>
                     ))}
                 </div>
             )}
@@ -148,7 +171,7 @@ export default function SubjectDetail() {
                 <div className="flex justify-end mb-3">
                     <button
                         onClick={handleToggleAnswer}
-                        className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer"
                     >
                         {selectedAnswer !== null || showingAnswer ? "回答を隠す" : "正答を見る"}
                     </button>

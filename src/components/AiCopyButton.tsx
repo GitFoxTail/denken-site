@@ -64,7 +64,7 @@ export function AiCopyButton({ question, subject }: Props) {
             <p className="text-xs text-blue-600 pb-2">
                 ボタンを押してコピー → ChatGPT・Claude等に貼り付け
             </p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {PROMPTS.map((prompt, i) => (
                     <button
                         key={i}
