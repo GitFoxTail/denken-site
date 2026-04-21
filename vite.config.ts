@@ -9,9 +9,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes('node_modules/react-katex') || id.includes('node_modules/katex')) {
-            return 'katex'
-          }
           if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
             return 'react-vendor'
           }
